@@ -1,0 +1,119 @@
+FUNKCIONÁLIS PARADIGMA BRAINROT WORKSHEET — MEGOLDÁSOK
+========================================================
+
+01. Fogalomfelismerés
+----------------------
+\x -> x * 2                                  → Lambda / névtelen függvény — Lambda Lali
+f . g  (pont operátor)                       → Függvényösszetétel — Függvényösszetétel Fanni
+add 5  (csak egy param, visszaad fnv-t)      → Részleges alkalmazás / Currying — Curry Csaba
+map f xs, filter p xs                        → Magasabb rendű függvények — Higher-Order Hugó
+foldl (+) 0 [1,2,3]                          → Fold / reduce — Fold Frida
+f [] = 0   f (x:xs) = ...                   → Mintaillesztés — Mintaillesztő Miska
+take 10 [1..]  (végtelen lista)              → Lusta kiértékelés — Lusta László
+Ugyanarra a bemenetre mindig ugyanaz         → Tiszta függvény — Tiszta Tivadar
+A kifejezés értéke nem függ helyétől         → Hivatkozási átláthatóság — Hivatkozási Hanna
+Az érték, amiből nem lehet tovább redukálni  → Normál forma — Normál Forma Norbert
+
+
+02. Redukciós lépések
+----------------------
+a) β-redukció lépései:
+
+(\x -> x + x) 5
+-- 1. lépés (β): 5 + 5          (x helyére 5 kerül)
+-- 2. lépés:     10              (összeadás kiértékelése)
+-- Normál forma: 10
+
+b) Normál formák:
+
+(a) 2 + 3 * 4       → normál forma: 14
+(b) map (*2) [1,2]  → normál forma: [2,4]
+(c) let x = x in x → normál forma: NINCS
+    (indok: körkörös definíció, örökké redukálódik, végtelen loop)
+
+
+03. Tail-rekurzió vs sima rekurzió
+------------------------------------
+-- A:
+szorzat []     = 1
+szorzat (x:xs) = x * szorzat xs
+-- Tail? NEM-TAIL
+-- (a szorzat xs eredményére még várni kell, hogy megszorozzuk x-szel)
+
+-- B:
+szorzatT [] acc     = acc
+szorzatT (x:xs) acc = szorzatT xs (x * acc)
+-- Tail? TAIL
+-- (a rekurzív hívás az utolsó művelet, nem vár semmire visszafelé)
+
+-- C: tail-recursive verzió akkumulátorral:
+osszegT [] acc     = acc
+osszegT (x:xs) acc = osszegT xs (x + acc)
+
+-- Használat: osszegT [1,2,3] 0  → 6
+
+
+04. Curry Csaba és függvényösszetétel
+---------------------------------------
+a) Curry:
+
+add x y = x + y
+
+add3     = add 3            -- típusa: Int -> Int
+add3 7                      -- → 10
+map (add 10) [1,2,3]        -- → [11,12,13]
+
+b) Függvényösszetétel:
+
+duplaPlusz1 = (+1) . (*2)
+
+duplaPlusz1 4  -- lépések: 4 *2 = 8 , +1 = 9 → eredmény: 9
+               -- (jobbról balra: először (*2), aztán (+1))
+
+-- Kombináció: megszoroz 3-mal, kivon 1-et, négyzetre emel:
+kombinalt = (^2) . (subtract 1) . (*3)
+kombinalt 5  -- → (5*3=15, 15-1=14, 14^2=196) → 196
+
+
+05. Lusta László vs Mohó Mónika
+---------------------------------
+take 5 [1..]  — végtelen lista első 5 eleme    → LUSTA
+  (mohó lefagyna, mert az egész végtelen listát kiértékelné)
+
+sum [1..100]  — véges lista összege             → MINDKETTŐ
+  (véges lista, mindkét stratégia kezeli)
+
+Fibonacci sorozat végtelen listája              → LUSTA
+  (mohó sosem fejezné be a teljes lista kiértékelését)
+
+Ha egy függvény argumentumát soha nem          → LUSTA
+  használjuk fel                                (mohó akkor is kiértékeli, lusta nem)
+
+
+06. Saját Brainrot Karakter
+-----------------------------
+Név:       Maybe Margit
+Fogalom:   Maybe típus — lehet érték, lehet semmi (Nothing / Just)
+
+Személyiség:
+   Margit soha nem ígér biztosat. Megkéred valamire, és vagy visszaad
+   egy értéket (Just x), vagy megveszi a vállát és azt mondja: Nothing.
+   Nem dob kivételt, nem crashel — csak őszinte. Ő a Null Nick biztonságos
+   alternatívája: ha Margittal dolgozol, a fordító MEGKÖVETEL, hogy
+   kezeld a "semmi" esetet is.
+
+Idézet:
+   "Lehet hogy van, lehet hogy nincs. De legalább megmondom melyik."
+
+Kódpélda:
+   osztDa :: Int -> Int -> Maybe Int
+   osztDa _ 0 = Nothing       -- nullával nem osztunk
+   osztDa a b = Just (a `div` b)
+
+   osztDa 10 2   -- → Just 5
+   osztDa 10 0   -- → Nothing  (nem crashel!)
+
+   -- Mintaillesztéssel kezelve:
+   case osztDa 10 x of
+     Nothing -> putStrLn "Nem lehet osztani!"
+     Just r  -> print r
