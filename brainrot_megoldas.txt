@@ -1,0 +1,76 @@
+C/C++ BRAINROT WORKSHEET — MEGOLDÁSOK
+======================================
+
+01. Melyik karakter vagyok?
+----------------------------
+int x = 10;                        → Változó Vlad
+int* p = &x;                       → Pointer Pete
+void f(int x) { x=99; }           → Xerox Chad
+void f(int& x) { x=99; }          → Key Dealer Kevin
+int* p = nullptr;                  → Null Nick
+{ int n=5; } // n meghal           → Scope Sensei
+template<T> T add(T a, T b)        → Generic Greg
+return n * f(n-1);                 → Recursion Rick
+
+
+02. Töltsd ki a hiányzó részeket!
+-----------------------------------
+a) Xerox Chad:
+   int chad = 5;
+   valtoztat(chad);
+   // chad értéke még mindig: 5
+   (Magyarázat: érték szerint adtuk át, csak a másolat változott 999-re)
+
+b) Pointer Pete:
+   *pete = 77;
+   printf("%d", ertek);  // kimenet: 77
+   (Magyarázat: pete az ertek memóriacímére mutat, *pete=77 közvetlenül
+    az ertek változót írja felül)
+
+c) Recursion Rick:
+   if (n == 0) return 0;  // base case
+   // osszeg(4) = 4+3+2+1+0 = 10
+
+
+03. Melyik Boss Karakter jelenik meg?
+--------------------------------------
+a) int* p = nullptr;
+   printf("%d", *p);
+   → SEGFAULT SAMU jelenik meg.
+   Nullptr-t dereferencelünk — érvénytelen memóriacímhez nyúlunk,
+   a program azonnal crashel.
+
+b) int* p = (int*)malloc(sizeof(int));
+   *p = 42;
+   // free() soha nem hívódik
+   → MEMORY LEAK MIKI jelenik meg.
+   A malloc()-kal foglalt memóriát sosem szabadítjuk fel free()-vel,
+   így az a program futása alatt elvész — memóriaszivárgás keletkezik.
+
+c) int vegtelen(int n) {
+       return vegtelen(n);  // base case?
+   }
+   → STACK OVERFLOW STAN jelenik meg.
+   Nincs base case, a függvény végtelen mélységig hívja saját magát,
+   a call stack betelik és a program összeomlik.
+
+
+04. Saját Brainrot Karakter
+-----------------------------
+Név:       Const Konstantina
+Fogalom:   const kulcsszó — megváltoztathatatlan érték
+Személyiség:
+   Konstantina egyszer dönt, és soha többé nem változtat. Határozott,
+   kiszámítható, és ha valaki megpróbálja módosítani az értékét —
+   a fordító azonnal visszautasítja. Nem rugalmas, de megbízható.
+   Ő az egyetlen, akiben mindig bízhatsz.
+
+Idézet:
+   "Én nem változom. Ez nem gyengeség — ez karakter."
+
+Kódpélda:
+   const int MAXERTEK = 100;
+   MAXERTEK = 200;  // FORDÍTÁSI HIBA — Konstantinát nem lehet módosítani!
+
+   const int* p = &MAXERTEK;  // pointer const int-re: *p nem írható
+   // p = &masik;             // de maga a pointer átírható
