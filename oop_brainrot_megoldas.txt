@@ -1,0 +1,124 @@
+C++ OOP BRAINROT WORKSHEET — MEGOLDÁSOK
+=========================================
+
+01. Melyik karakter vagyok?
+----------------------------
+class Kutya { ... };                          → Osztály (class) — Osztály Olga
+Kutya k("Rex");                               → Példányosítás — Példányosító Pál
+Kutya(string n) { nev=n; }                   → Konstruktor — Konstruktor Kristóf
+~Kutya() { delete adat; }                    → Destruktor — Destruktor Dezső
+class Kutya : public Allat                   → Öröklés — Öröklődő Olivér
+virtual void hangotAd() = 0;                 → Pure virtual / Absztrakt — Absztrakt Anikó
+void f() override { ... }                    → Polimorfizmus / felülírás — Polimorf Péter
+private: int egyenleg;                       → Egységbezárás — Bezáró Bence
+Allat* a = new Kutya();
+a->hangotAd(); // futáskor dől el            → Késői kötés (dynamic dispatch) — Late Binding Lajos
+
+
+02. Töltsd ki a hiányzó részeket!
+-----------------------------------
+a) Konstruktor és Destruktor:
+
+class Auto {
+public:
+    std::string marka;
+    int* ev;
+
+    // konstruktor:
+    Auto(std::string m) {
+        marka = m;
+        ev = new int(2024);
+    }
+
+    // destruktor:
+    ~Auto() {
+        delete ev;
+    }
+};
+
+Magyarázat:
+- A konstruktor neve megegyezik az osztály nevével: Auto(...)
+- A destruktor neve ~ + osztálynév: ~Auto()
+- A delete ev felszabadítja a heap-en foglalt memóriát
+
+
+b) Bezáró Bence — hozzáférési módosítók:
+
+class BankSzamla {
+    int egyenleg = 0;       // Belülről látszik, kívülről nem → private
+    int hitelkeret = 50000; // Leszármazott is látja, kívülső nem → protected
+    void befizet(int x);    // Mindenki hívhatja → public
+};
+
+
+c) Polimorf Péter — kimenet:
+
+Allat* allatok[] = { new Kutya(), new Macska(), new Kutya() };
+for (auto* a : allatok) a->hangotAd();
+// Kimenetek sorban: "Vau!" , "Miau!" , "Vau!"
+
+Magyarázat: A virtual hangotAd() miatt futásidőben dől el, melyik
+implementáció fut — ez a dinamikus dispatch (Late Binding Lajos).
+
+
+03. Absztrakt Anikó vs Interfész István
+-----------------------------------------
+X = Interfész
+    mert: kizárólag pure virtual (= 0) metódusokat tartalmaz,
+    semmi implementáció, semmi adattag — tisztán csak szerződés.
+
+Y = Absztrakt osztály
+    mert: van pure virtual metódusa (mozog() = 0), de emellett
+    van konkrét implementációja is (legzik()) és adattagja is
+    (energia = 100) — tehát nem tisztán interfész.
+
+
+04. Early Eddie vs Late Binding Lajos
+---------------------------------------
+Kutya k; k.ugat();  (ugat nem virtual)                    → EARLY
+Allat* a = new Kutya(); a->hangotAd();  (virtual)          → LATE
+osszeAdd<int>(3,4);  (template)                            → EARLY
+Függvény overloading (f(int) vs f(double))                 → EARLY
+virtual void f() = 0;  leszármazotton hívva               → LATE
+
+
+05. Mini osztályhierarchia — 3 szint
+--------------------------------------
+Szint 1 — ABSZTRAKT alap:
+  class Jarmű {
+  public:
+      virtual void mozog() = 0;    // pure virtual → minden jármű mozog
+      virtual void megall() = 0;   // pure virtual → mindenki megáll
+      virtual ~Jarmű() = default;
+  protected:
+      int max_sebesseg;            // leszármazott látja, kívülső nem
+  private:
+      int gyartasi_ev;             // csak Jármű látja
+  };
+
+Szint 2 — ABSZTRAKT közbülső:
+  class Motoros_jarmű : public Jarmű {
+  public:
+      void megall() override { /* fékez */ }   // megvalósítja
+      virtual void tankol() = 0;               // újabb pure virtual
+  protected:
+      int hengerűrtartalom;
+  };
+
+Szint 3 — KONKRÉT osztály:
+  class Auto : public Motoros_jarmű {
+  public:
+      void mozog() override { /* gázt ad */ }  // megvalósítja
+      void tankol() override { /* benzin */ }  // megvalósítja
+  private:
+      int ajtok_szama;
+  };
+
+Auto a;       // ✅ lehet példányosítani — minden pure virtual meg van valósítva
+Jarmű j;     // ❌ nem lehet — absztrakt
+Motoros_jarmű m; // ❌ nem lehet — még van pure virtual (tankol)
+
+IS-A kapcsolatok:
+  Auto IS-A Motoros_jarmű ✅
+  Auto IS-A Jármű         ✅
+  Auto IS-A Kutya         ❌
